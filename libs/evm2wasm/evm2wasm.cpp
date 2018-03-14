@@ -52,6 +52,10 @@ string evm2wast(const string& input, bool tracing) {
   (void)input;
   (void)tracing;
   // FIXME: do evm magic here
+  for(int i = 0; i< input.length(); ++i) {
+    auto op = opcodes.find(input[i]);
+    // std::cout << std::get<0>(*op) << std::endl;
+  };
   return "(module (export \"main\" (func $main)) (func $main))";
 }
 
