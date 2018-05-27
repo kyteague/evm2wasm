@@ -353,9 +353,9 @@ struct WastCode
 
 std::string wast2wasm(const std::string &input, bool debug = false);
 
-std::string evm2wasm(const std::string &input, bool tracing = false);
+std::string evm2wasm(const std::vector<uint8_t> &input, bool tracing = false);
 
-std::string evm2wast(const std::string &input, bool stackTrace = false, bool useAsyncAPI = false,
+std::string evm2wast(const std::vector<uint8_t> &input, bool stackTrace = false, bool useAsyncAPI = false,
     bool inlineOps = true);
 
 std::string assembleSegments(const std::vector<JumpSegment>& segments);
@@ -364,7 +364,7 @@ std::string opcodeToString(opcodeEnum opcode);
 
 Op opcodes(int op);
 
-size_t findNextJumpDest(const std::vector<char>& evmCode, size_t i);
+size_t findNextJumpDest(const std::vector<uint8_t >& evmCode, size_t i);
 
 std::set<opcodeEnum> resolveFunctionDeps(const std::set<opcodeEnum>& funcSet);
 

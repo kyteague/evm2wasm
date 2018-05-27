@@ -34,10 +34,15 @@ int main(int argc, char **argv) {
         std::istreambuf_iterator<char>()
     );
 
+    std::vector<uint8_t> byteCode;
+    for (auto c : str) {
+      byteCode.push_back(static_cast<uint8_t>(c));
+    }
+
     if (wast) {
-        cout << evm2wasm::evm2wast(str) << endl;
+        cout << evm2wasm::evm2wast(byteCode) << endl;
     } else {
-        cout << evm2wasm::evm2wasm(str) << endl;
+        cout << evm2wasm::evm2wasm(byteCode) << endl;
     }
 
     return 0;

@@ -71,22 +71,8 @@ string wast2wasm(const string& input, bool debug)
     return output.str();
 }
 
-std::vector<char> HexToBytes(const std::string& hex) {
-    std::vector<char> bytes;
-
-    for (unsigned int i = 0; i < hex.length()-1; i += 2) {
-        std::string byteString = hex.substr(i, 2);
-        char byte = (char) strtol(byteString.c_str(), NULL, 16);
-        bytes.push_back(byte);
-    }
-
-    return bytes;
-}
-
-string evm2wast(const string& evmStr, bool stackTrace, bool useAsyncAPI, bool inlineOps)
+string evm2wast(const std::vector<uint8_t>& evmCode, bool stackTrace, bool useAsyncAPI, bool inlineOps)
 {
-    std::vector<char> evmCode = HexToBytes(evmStr);
-
     // FIXME: do evm magic here
     // this keep track of the opcode we have found so far. This will be used to
     // to figure out what .wast files to include
@@ -410,7 +396,7 @@ std::string assembleSegments(const std::vector<JumpSegment>& segments)
     return result;
 }
 
-string evm2wasm(const string& input, bool tracing)
+string evm2wasm(const std::vector<uint8_t>& input, bool tracing)
 {
     string wast = evm2wast(input, tracing);
     return wast2wasm(wast, true);
@@ -600,7 +586,7 @@ Op opcodes(int op)
 // @param {Array} evmCode
 // @param {Integer} index
 // @return {Integer}
-size_t findNextJumpDest(const std::vector<char>& evmCode, size_t i)
+size_t findNextJumpDest(const std::vector<uint8_t>& evmCode, size_t i)
 {
     for (; i < evmCode.size(); i++)
     {
