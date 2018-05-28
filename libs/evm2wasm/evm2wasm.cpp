@@ -71,7 +71,7 @@ string wast2wasm(const string& input, bool debug)
     return output.str();
 }
 
-string evm2wast(const std::vector<uint8_t>& evmCode, bool stackTrace, bool useAsyncAPI, bool inlineOps)
+string evm2wast(const std::vector<uint8_t>& evmCode, bool stackTrace, bool useAsyncAPI, bool inlineOps, bool chargePerOp)
 {
     // FIXME: do evm magic here
     // this keep track of the opcode we have found so far. This will be used to
@@ -122,9 +122,11 @@ string evm2wast(const std::vector<uint8_t>& evmCode, bool stackTrace, bool useAs
     };
 
     // add a metering statment at the beginning of a segment
-    auto addMetering = [&segment, &wast, &gasCount]() {
-        wast << "(call $useGas (i64.const {gasCount}))"_format("gasCount"_a = gasCount)
-             << segment.str();
+    auto addMetering = [&segment, &wast, &gasCount, &chargePerOp]() {
+        if (!chargePerOp) {
+            wast << "(call $useGas (i64.const {gasCount}))"_format("gasCount"_a = gasCount);
+        }
+        wast << segment.str();
         segment.clear();
         gasCount = 0;
     };
@@ -150,6 +152,10 @@ string evm2wast(const std::vector<uint8_t>& evmCode, bool stackTrace, bool useAs
         }
 
         std::vector<char> bytes;
+
+        if (chargePerOp) {
+            segment << "(call $useGas (i64.const ${fee}))"_format("fee"_a = op.fee);
+        }
         // do not charge gas for interface methods
         // TODO: implement proper gas charging and enable this here
         if (opint < 0x30 || (opint > 0x45 && opint < 0xa0)) {

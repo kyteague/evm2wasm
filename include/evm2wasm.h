@@ -356,7 +356,7 @@ std::string wast2wasm(const std::string &input, bool debug = false);
 std::string evm2wasm(const std::vector<uint8_t> &input, bool tracing = false);
 
 std::string evm2wast(const std::vector<uint8_t> &input, bool stackTrace = false, bool useAsyncAPI = false,
-    bool inlineOps = true);
+    bool inlineOps = true, bool chargePerOp = false);
 
 std::string assembleSegments(const std::vector<JumpSegment>& segments);
 
