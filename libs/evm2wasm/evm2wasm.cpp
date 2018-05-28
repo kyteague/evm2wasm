@@ -142,7 +142,11 @@ string evm2wast(const std::vector<uint8_t>& evmCode, bool stackTrace, bool useAs
         auto op = opcodes(opint);
 
         std::vector<char> bytes;
-        gasCount += op.fee;
+        // do not charge gas for interface methods
+        // TODO: implement proper gas charging and enable this here
+        if (opint < 0x30 || (opint > 0x45 && opint < 0xa0)) {
+            gasCount += op.fee;
+        }
 
         segmentStackDelta += op.on;
         if (segmentStackDelta > segmentStackHigh)
