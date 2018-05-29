@@ -20,4 +20,8 @@ project(evm2wasm)
 include(ProjectBinaryen)
 
 add_subdirectory(libs)
-add_subdirectory(tools)
+
+option(EVM2WASM_TOOLS OFF)
+if(EVM2WASM_TOOLS)
+    add_subdirectory(tools)
+endif()
