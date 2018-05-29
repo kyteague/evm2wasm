@@ -40,6 +40,7 @@ const depMap = new Map([
   ['CALL', ['bswap_m256', 'memusegas', 'check_overflow_i64', 'check_overflow', 'memset', 'callback_32']],
   ['DELEGATECALL', ['callback', 'memusegas', 'check_overflow_i64', 'check_overflow', 'memset', 'callback_32']],
   ['CALLCODE', ['bswap_m256', 'callback', 'memusegas', 'check_overflow', 'check_overflow_i64', 'memset', 'callback_32']],
+  ['STATICCALL', ['callback', 'memusegas', 'check_overflow_i64', 'check_overflow', 'memset', 'callback_32']],
   ['CREATE', ['bswap_m256', 'bswap_m160', 'callback_160', 'memusegas', 'check_overflow']],
   ['RETURN', ['memusegas', 'check_overflow']],
   ['BALANCE', ['bswap_m256', 'callback_128']],

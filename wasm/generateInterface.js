@@ -137,6 +137,12 @@ const interfaceManifest = {
     input: ['i64', 'address', 'readOffset', 'length'],
     output: ['i32']
   },
+  STATICCALL: {
+    name: 'callStatic',
+    async: true,
+    input: ['i64', 'address', 'readOffset', 'length'],
+    output: ['i32']
+  },
   SSTORE: {
     name: 'storageStore',
     async: true,
@@ -265,7 +271,7 @@ function generateManifest (interfaceManifest, opts) {
       (i64.load (i32.add (get_global $sp) (i32.const ${spOffset * 32 + 8 * 2})))
       (i64.load (i32.add (get_global $sp) (i32.const ${spOffset * 32 + 8 * 3})))))`
         call += `(get_local $offset${numOfLocals})`
-      } else if (input === 'length' && (opcode === 'CALL' || opcode === 'CALLCODE' || opcode === 'DELEGATECALL')) {
+      } else if (input === 'length' && (opcode === 'CALL' || opcode === 'CALLCODE' || opcode === 'DELEGATECALL' || opcode === 'STATICCALL')) {
         // CALLs in EVM have 7 arguments
         // but in ewasm CALLs only have 5 arguments
         // so delete the bottom two stack elements, after processing the 5th argument
@@ -365,7 +371,7 @@ function generateManifest (interfaceManifest, opts) {
         call += '(get_local $callback)'
       }
 
-      if (opcode === 'CALL' || opcode === 'CALLCODE' || opcode === 'DELEGATECALL') {
+      if (opcode === 'CALL' || opcode === 'CALLCODE' || opcode === 'DELEGATECALL' || opcode === 'STATICCALL') {
         call =
           `(i64.store
       (i32.add (get_global $sp) (i32.const ${spOffset * 32}))
