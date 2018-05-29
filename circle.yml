@@ -45,7 +45,7 @@ defaults:
       command: |
         git clone https://github.com/ewasm/hera
         cd hera
-        git reset 817d85bb4f09d24f11ddfc67bcc548032f708cfc --hard
+        git reset e4ff916 --hard
         git submodule update --init --recursive
         rm -rf evm2wasm
         ln -s evm2wasm ~/evm2wasm
