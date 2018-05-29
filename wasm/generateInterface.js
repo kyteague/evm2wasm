@@ -134,7 +134,7 @@ const interfaceManifest = {
   DELEGATECALL: {
     name: 'callDelegate',
     async: true,
-    input: ['i32', 'address', 'i128', 'readOffset', 'length', 'writeOffset', 'length'],
+    input: ['i64', 'address', 'readOffset', 'length'],
     output: ['i32']
   },
   SSTORE: {
@@ -249,7 +249,7 @@ function generateManifest (interfaceManifest, opts) {
            (i64.load (i32.add (get_global $sp) (i32.const ${spOffset * 32 + 8})))
            (i64.load (i32.add (get_global $sp) (i32.const ${spOffset * 32 + 8 * 2})))
            (i64.load (i32.add (get_global $sp) (i32.const ${spOffset * 32 + 8 * 3}))))`
-      } else if (input === 'i64' && opcode !== 'CALL') {
+      } else if (input === 'i64') {
         call += `(call $check_overflow_i64
            (i64.load (i32.add (get_global $sp) (i32.const ${spOffset * 32})))
            (i64.load (i32.add (get_global $sp) (i32.const ${spOffset * 32 + 8})))
@@ -265,7 +265,7 @@ function generateManifest (interfaceManifest, opts) {
       (i64.load (i32.add (get_global $sp) (i32.const ${spOffset * 32 + 8 * 2})))
       (i64.load (i32.add (get_global $sp) (i32.const ${spOffset * 32 + 8 * 3})))))`
         call += `(get_local $offset${numOfLocals})`
-      } else if (input === 'length' && (opcode === 'CALL' || opcode === 'CALLCODE')) {
+      } else if (input === 'length' && (opcode === 'CALL' || opcode === 'CALLCODE' || opcode === 'DELEGATECALL')) {
         // CALLs in EVM have 7 arguments
         // but in ewasm CALLs only have 5 arguments
         // so delete the bottom two stack elements, after processing the 5th argument
@@ -302,7 +302,7 @@ function generateManifest (interfaceManifest, opts) {
       (i64.store (i32.add (get_global $sp) (i32.const ${spOffset * 32 + 8 * 2})) (i64.const 0))
       (i64.store (i32.add (get_global $sp) (i32.const ${spOffset * 32 + 8 * 1})) (i64.const 0))`
 
-      } else if (input === 'length' && (opcode !== 'CALL' && opcode !== 'CALLCODE')) {
+      } else if (input === 'length') {
         locals += `(local $length${numOfLocals} i32)`
         body += `(set_local $length${numOfLocals} 
     (call $check_overflow 
