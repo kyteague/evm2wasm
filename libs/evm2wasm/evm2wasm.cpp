@@ -257,8 +257,8 @@ string evm2wast(const std::vector<uint8_t>& evmCode, bool stackTrace, bool useAs
 
             for (; q < 4; q++)
             {
-                //auto int64 = reinterpret_cast<int64_t>(bytes.substr(q * 8, q * 8 + 8).c_str());
-                auto int64 = reinterpret_cast<int64_t>(&bytes[q*8]);
+                auto int64 = reinterpret_cast<int64_t>(bytes.substr(q * 8, q * 8 + 8).c_str());
+                //auto int64 = reinterpret_cast<int64_t>(&bytes[q*8]);
 
                 push << "(i64.const {int64})"_format("int64"_a = int64);
             }
