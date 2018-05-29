@@ -48,7 +48,7 @@ defaults:
         git reset e4ff916 --hard
         git submodule update --init --recursive
         rm -rf evm2wasm
-        ln -s evm2wasm ~/evm2wasm
+        ln -s /home/builder/evm2wasm evm2wasm
         cmake -DBUILD_SHARED_LIBS=ON .
         make -j8
         mv ~/evm2wasm/hera/src/libhera.so ~/libhera.so
