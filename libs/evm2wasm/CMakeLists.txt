@@ -6,7 +6,7 @@ hunter_add_package(fmt)
 
 find_package(fmt CONFIG REQUIRED)
 
-add_library(libevm2wasm
+add_library(libevm2wasm STATIC
     evm2wasm.cpp ${include_dir}/evm2wasm.h
 )
 set_target_properties(libevm2wasm PROPERTIES OUTPUT_NAME evm2wasm)
