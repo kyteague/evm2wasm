@@ -238,14 +238,20 @@ string evm2wast(const std::vector<uint8_t>& evmCode, bool stackTrace, bool useAs
             pc++;
             size_t sliceSize = std::min(op.number, 32ul);
             bytes = std::vector<char>(evmCode.begin() + pc, evmCode.begin() + pc + sliceSize);
+
             pc += op.number;
             if (op.number < 32)
             {
-                bytes.insert(bytes.begin(), 32 - op.number, '0');
+                bytes.insert(bytes.begin(), 32 - op.number, 0);
             }
-            auto bytesRounded = ceil(op.number / 8);
+
+            auto bytesRounded = ceil((double)op.number / 8.0);
             fmt::MemoryWriter push;
             int q = 0;
+
+            cout << "number " << op.number;
+            cout << "bytes rounded " << bytesRounded << endl;
+
             // pad the remaining of the word with 0
             for (; q < 4 - bytesRounded; q++)
             {
@@ -257,8 +263,12 @@ string evm2wast(const std::vector<uint8_t>& evmCode, bool stackTrace, bool useAs
 
             for (; q < 4; q++)
             {
-                auto int64 = reinterpret_cast<int64_t>(bytes.substr(q * 8, q * 8 + 8).c_str());
-                //auto int64 = reinterpret_cast<int64_t>(&bytes[q*8]);
+                //TODO clean this disgusting mess up
+
+                std::reverse(bytes.begin()+q*8, bytes.begin()+q*8+8);
+
+                uint64_t int64 = 0;
+                memcpy(&int64, &bytes[q*8], 8);
 
                 push << "(i64.const {int64})"_format("int64"_a = int64);
             }
@@ -408,7 +418,9 @@ std::string assembleSegments(const std::vector<JumpSegment>& segments)
 
 string evm2wasm(const std::vector<uint8_t>& input, bool tracing)
 {
+    tracing = true;
     string wast = evm2wast(input, tracing);
+    cout << wast << endl;
     return wast2wasm(wast, true);
 }
 
